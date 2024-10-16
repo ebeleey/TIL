@@ -5,9 +5,9 @@
 - 
 [1. Hello World]()
 
-[2. 변수](/java-start/variable/README.md)
+[2. 변수](java-start/variable/README.md/)
 
-[3. 연산자](/java-start/operator/README.md)
+[3. 연산자](java-start/operator/README.md/)
 
 [4. 조건문]
 
