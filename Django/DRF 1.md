@@ -3,8 +3,6 @@
 날짜: 2024년 10월 16일
 태그: Django
 
-https://edu.ssafy.com/data/upload_files/crossUpload/openLrn/ebook/unzip/A2024092319545847700/index.html
-
 # REST API
 
 ## API
