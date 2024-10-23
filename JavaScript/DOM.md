@@ -73,7 +73,7 @@ Ecma International이 정의하고 있는 표준화된 스크립트 프로그래
 
 1. `let`
 2. `const`
-3. `~~var~~`
+3. ~`var`~
 
 ### let
 
