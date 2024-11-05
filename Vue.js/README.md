@@ -4,7 +4,7 @@
 
 - [Basic Syntax 01](Basic%20Syntax%201.md)
 
-- [Basic Syntax 02]
+- [Basic Syntax 02](Basic%20Syntax%202.md)
 
 - [Single File Component]
 
