@@ -6,7 +6,7 @@
 
 - [Basic Syntax 02](Basic%20Syntax%202.md)
 
-- [Single File Component]
+- [Single File Component](Single-File%20Components.md)
 
 - [Component State Flow]
 
