@@ -10,7 +10,7 @@
 
 - [Component State Flow](Component%20State%20Flow.md)
 
-- [Router]
+- [Router](Vue%20Router.md)
 
 - [State management]
 
