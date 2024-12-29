@@ -1,4 +1,8 @@
 ## Udemy 한입리액트 / 리액트 완벽가이드 수강
+- **React 강의 수강** 후 각자 **내용 정리하기**
+  - [프론트엔드 스터디](https://github.com/SorrowAddict/React-TS_study)
+  - 기간: 2024.12.3 ~ 2024.12.18
+
 ### 개념
 - [Vanilla JavaScript](lecture/00_Vanilla_JS/README.md)
 - [React 구조](lecture/01_React_structure/README.md)
