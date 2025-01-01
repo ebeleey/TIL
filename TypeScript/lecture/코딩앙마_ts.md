@@ -414,6 +414,154 @@ console.log(myToyCar.name); // "토이카"
 
 # #4 함수
 
+### 기본 함수 선언
+
+```ts
+function add(num1: number, num2: number): void {
+  console.log(num1 + num2);
+}
+```
+---
+### 리턴 타입 명시
+숫자(`number`)을 받아, 성인 여부를 참/거짓(`boolean`)으로 반환
+```ts
+function isAdult(age: number): boolean {
+  return age > 19;
+}
+```
+----
+### 선택적 매개변수 
+인터페이스처럼 함수의 매개변수도 optional로 지정해줄 수 있음
+```ts
+function hello(name?: string) {
+  return `Hello, ${name ||"world"}`;
+}
+
+const result1 = hello(); // "Hello, world"
+const result2 = hello("Sam"); // "Hello, Sam"
+// const result3 = hello(123); // 오류
+```
+- `name?: string`:
+  - `name`은 선택적 매개변수이며, 전달되지 않으면 `undefined`로 처리
+- `||` 연산자:
+  - `name`이 `undefined`라면 `"world"`를 기본값으로 사용
+
+---
+### 기본값 매개변수
+```ts
+function hello(name= "world") {
+  return `Hello, ${name}`;
+}
+```
+- 기본값(default 값)
+  - `name` 매개변수가 없을 경우 `"world"`가 기본값으로 설정.
+---
+### 선택적 매개변수 & 기본값
+이름과 나이를 받아서 문자열을 출력
+
+```ts
+function hello(name: string, age?: number): string {
+  if (age !== undefined) {
+    return `Hello, ${name}. You are ${age}.`;
+  } else {
+    return `Hello, ${name}`;
+  }
+}
+
+console.log(hello("Sam")); // Hello, Sam
+console.log(hello("Sam", 30)); // Hello, Sam. You are 30.
+```
+- 선택적 매개변수는 일반 매개변수보다 뒤에 와야 함.
+- `age`가 `undefined`인지 체크하여 조건에 따라 다른 결과를 반환.
+
+---
+
+### 나머지 매개변수
+```ts
+function add(...nums: number[]) {
+  return nums.reduce((result, num) => result + num, 0);
+}
+
+add(1, 2, 3); // 6
+add(1, 2, 3, 4, 5, 6, 7, 8, 9, 10); // 55 
+```
+
+- `...nums: number[]`:
+  - 여러 개의 숫자를 배열 형태로 받는다.
+- `reduce`:
+  - 배열 요소를 순회하며 합산하는 메서드
+
+---
+### `this` 타입 지정
+
+```ts
+interface User {
+  name: string;
+}
+
+const Sam: User = {name: 'Sam'}
+
+function showName(this: User) {
+  console.log(this.name);
+}
+
+const a = showName.bind(Sam);
+a(); // "Sam"
+```
+- `this: User`:
+  - 함수 내에서 `this`는 반드시 `User` 타입이어야 한다는 의미.
+- `bind`:
+  - `Sam` 객체를 `this`로 고정하여 함수 호출 시 `Sam.naem`을 참조.
+
+```ts
+interface User {
+  name: string;
+}
+
+const Sam: User = {name: 'Sam'}
+
+function showName(this: User, age: number, gender: 'm'|'f') {
+  console.log(this.name, age, gender);
+}
+
+const a = showName.bind(Sam);
+a(30, 'm');
+```
+- 함수가 매개변수를 받을 때에도, `this` 타입 지정(`this: User`은 맨 첫번째로 전달한다.
+
+---
+
+### 함수 오버로드
+전달받은 매개변수의 개수나 타입에 따라 다른 동작을 하게 하는 것
+```ts
+interface User {
+  name: string;
+  age: number;
+}
+
+function join(name: string, age: number): User;
+function join(name: string, age: string): string;
+function join(name: string, age: number | string): User | string {
+  if (typeof age === "number") {
+    return {
+      name, 
+      age.
+    }
+  } else {
+    return "나이는 숫자로 입력해주세요."
+  }
+}
+
+const sam: User = join("Sam", 30); // { name: "Sam", age: 30 }
+const jane: string = join("Jane", "30"); // "나이는 숫자로 입력해주세요."
+```
+- 오버로드 선언: 
+  - 동일한 함수 이름으로 서로 다른 매개변수 타입과 반환 타입을 정의.
+- 오버로드 구현:
+  - 매개변수 `age`가 `number`인지 `string`인지에 따라 다른 동작을 수행.
+
+<br>
+
 # #5 리터럴, 유니온/교차 타입
 
 # #6 클래스(Class)
