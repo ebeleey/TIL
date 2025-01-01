@@ -1,3 +1,4 @@
+# 목차
 
 1. [타입스크립트를 쓰는 이유를 알아보자](#1-타입스크립트를-쓰는-이유를-알아보자)
 2. [기본 타입](#2-기본-타입)
@@ -10,7 +11,7 @@
 
 <br>
 
-## #1 타입스크립트를 쓰는 이유를 알아보자
+# #1 타입스크립트를 쓰는 이유를 알아보자
 
 ### JavaScript의 문제점
 
@@ -70,7 +71,7 @@ showItems([1, 2, 3]); // 1 2 3
 
 <br>
 
-## #2 기본 타입
+# #2 기본 타입
 
 ### 문자열
 ```ts
@@ -154,6 +155,7 @@ enum Os {
 enum에 수동으로 값을 주지 않으면 자동으로 인덱스를 할당함.
 
 **수동 값 할당**
+
 ```ts
 enum Os {
   Window = 3, // 3
@@ -173,6 +175,7 @@ console.log(Os['Ios']) // 10
 ```
 
 **문자열 값 할당**
+
 숫자가 아닌 문자열도 입력할 수 있지만 단방향 매핑만 된다.
 
 ```ts
@@ -190,7 +193,7 @@ myOs = Os.Window;
 특정 값만 입력할 수 있도록 강제하고 싶을 때, 또는 비슷한 값들을 그룹화할 때 enum을 사용
 
 ---
-### null, undefined
+## null, undefined
 
 ```ts
 // null, undefined
@@ -199,10 +202,215 @@ let a:null = null;
 let b:undefined = undefined;
 ```
 
-
 <br>
 
 # #3 인터페이스(Interface)
+
+### 인터페이스란 ?
+- 객체의 구조를 정의할 때 사용
+- 객체의 프로퍼티와 메서드의 타입을 명확히 규정
+- 선택적 프로퍼티(`?`), 읽기 전용 프로퍼티(`readonly`), 타입 확장을 지원
+---
+### 인터페이스 기본 사용법
+**객체 구조 정의**
+```ts
+interface User {
+  name: string;
+  age: number;
+  gender?: string; // Optional Property 
+  readOnly birthYear: number; // Readonly Property
+}
+
+let user: User = {
+  name = 'xx',
+  age: 30,
+  birthYear: 2000,
+}
+
+console.log(user.name); // 'xx'
+
+user.age = 10; // 수정 가능
+console.log(user.age);  // 10 
+
+user.birthYear = 1990; // 오류: 읽기 전용 속성은 수정 불가
+```
+---
+### 문자열 인덱스 서명
+```ts
+interface User {
+  name: string;
+  age: number;
+  [grade:number]: string; // 숫자 키는 문자열 값을 가짐
+}
+
+let user: User = {
+  name = 'xx',
+  age: 30,
+  1: 'A',
+  2: 'B',
+}
+
+console.log(user[1]); // 'A'
+```
+---
+### 문자열 리터럴 타입
+
+```ts
+type Score = 'A' | 'B' | 'C' | 'F';
+
+interface User {
+  name: string;
+  age: number;
+  grade: Score; // 'A', 'B', 'C', 'F'만 허용
+}
+
+let user: User = {
+  name: 'xx',
+  age: 30,
+  grade: 'A', // 가능
+};
+
+// user.grade = 'Z'; // 오류: 'Z'는 Score에 포함되지 않음
+```
+---
+### 함수 타입 정의
+**함수 인터페이스**
+```ts
+interface Add {
+  (num1: number, num2: number): number; // 매개변수와 반환값 타입 정의
+}
+
+const add: Add = function(x, y) {
+  return x + y;
+}
+
+add(10, 20); // 30
+// add(10, '20') // 오류: 두 번째 매개변수는 숫자여야 함
+// add(10, 20, 30) // 오류: 매개변수는 두 개만 받음
+```
+
+```ts
+interface IsAdult {
+  (age: number): boolean;
+}
+
+const a:IsAdult = (age) => {
+  return age > 19;
+}
+
+a(33) // true
+```
+---
+
+### 클래스와 인터페이스
+**클래스에서 `implements` 사용**
+
+```ts
+//implements
+
+interface Car {
+  color: string;
+  wheels: number;
+  start(): void;
+}
+
+class Bmw implements Car {
+  color = 'red';
+  wheels = 4;
+  start(){
+    console.log('go..')
+  }
+}
+
+const myCar = new Bmw();
+myCar.start(); // 'go...'
+```
+
+**생성자와 인터페이스**
+```ts
+interface Car {
+  color: string;
+  wheels: number;
+  start(): void;
+}
+
+class Bmw implements Car {
+  color;
+  wheels = 4;
+
+  constructor(c: string){
+    this.color = c;
+  }
+
+  start(){
+    console.log('go..')
+  }
+}
+
+const myCar = new Bmw('green');
+console.log(myCar.color); // 'green'
+```
+
+---
+
+### 인터페이스 확장(`extends`)
+**단일 인터페이스 확장**
+```ts
+interface Car {
+  color: string;
+  wheels: number;
+  start(): void;
+}
+
+interface Benz extends Car {
+  door: number;
+  stop(): void;
+}
+
+
+const benz: Benz = {
+  color: 'black',
+  wheels: 4,
+  door: 4,
+  start() {
+    console.log('start');
+  },
+  stop() {
+    console.log('stop');
+  },
+};
+```
+**다중 확장**
+
+```ts
+
+interface Car {
+  color: string;
+  wheels: number;
+  start(): void;
+}
+
+interface Toy {
+  name: string;
+}
+
+interface ToyCar extends Car, Toy {
+  price: number;
+}
+
+const myToyCar: ToyCar = {
+    color: 'red',
+    wheels: 4,
+    name: '토이카',
+    price: 1000,
+    start() {
+        console.log("출발")
+    },
+}
+console.log(myToyCar.name); // "토이카"
+```
+
+<br>
 
 # #4 함수
 
