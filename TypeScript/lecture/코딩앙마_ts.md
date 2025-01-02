@@ -564,8 +564,535 @@ const jane: string = join("Jane", "30"); // "나이는 숫자로 입력해주세
 
 # #5 리터럴, 유니온/교차 타입
 
+### 리터럴 타입
+
+```ts
+const userName1 = "Bob"; // 변하지 않는 값 (userName1: "Bob")
+let userName2 = "Tom"; // 변할 수 있는 값 (userName2: string)
+```
+특정 값만을 타입으로 지정한다.
+
+### 문자열 리터럴 타입
+```ts
+// Literal Types
+
+type Job = "police" | "developer" | "teacher";
+
+interface User {
+  name: string;
+  job: Job;
+}
+
+const user:User = {
+  name: "Bob",
+  job: "developer" // job 프로퍼티는 위에서 선언한 값만 사용 가능
+}
+```
+미리 정해진 값만 사용하도록 제한
+
+### 숫자 리터럴 타입
+
+```ts
+interface HighSchoolStudent {
+  name: string;
+  grade: 1 | 2 | 3;
+}
+```
+특정 숫자 값만을 타입으로 지정
+
+--- 
+### 유니온 타입
+
+```ts
+// Union Types
+
+interface Car {
+  name: "car";
+  color: string;
+  start(): void;
+}
+
+interface Mobile {
+  name: "mobile";
+  color: string;
+  call(): void;
+}
+
+function getGift(gift: Car | Mobile) {
+  console.log(gift.color);
+  if(gift.name === "car") {
+    gift.start();
+  } else {
+    gift.call();
+  }
+}
+```
+- **유니온 타입** (`Car | Mobile`):
+  - `Car`와 `Mobile` 둘 중 하나의 타입을 가질 수 있습니다.
+- **식별가능한 유니온**:
+  - 동일한 이름의 속성을 정의하고, 타입을 다르게 줌으로써 두 개의 인터페이스를 구분할 수 있음.
+  - 두 타입 모두 `name` 속성을 가지며, 각기 다른 고유값을 사용 (`"car"`, `"mobile"`) => 이를 통해 타입을 구분
+  - 검사해야할 항목이 많아지면 if문보다는 switch문을 사용하는게 좋음.
+
+---
+
+### 교차 타입
+
+```ts
+// Intersection Types
+
+interface Car {
+  name: string;
+  start(): void;
+} 
+
+interface Toy {
+  name: string;
+  color: string;
+  price: number;
+}
+
+const toyCar: Toy & Car = {
+  name: "타요",
+  start() {},
+  color: "blue",
+  price: 1000,
+}
+```
+`Car`와 `Toy`의 **모든 속성**과 **메서드**를 가진 객체를 정의
+
+<br>
+
+
 # #6 클래스(Class)
+
+### 💡 참고 - ES6의 클래스
+
+[JavaScript - 객체와 클래스](../../JavaScript/Reference%20Type%202.md)
+
+---
+
+### 클래스 정의
+
+```ts
+class Car {
+  color: string;
+
+  constructor(color: string){
+    this.color = color;
+  }
+
+  start(){
+    console.log("start");
+  }
+}
+
+const bmw = new Car("red");
+console.log(bmw.color); // "red"
+bmw.start(); // "start"
+```
+- 멤버 변수 선언
+  - TypeScript에서는 클래스를 작성할 때 멤버변수는 미리 선언을 해야 한다.
+- 생성자 단축 문법
+  - `constructor(public color: string)`
+  - `public`, `private`, `readonly`를 활용하면 선언과 초기화 동시에 처리 가능
+
+---
+
+### 접근 제한자(Access Modifier) - `public`, `private`, `protected`
+
+- `public`
+  - 자식 클래스나 클래스 인스턴스에서 접근 가능
+  - 아무것도 선언하지 않고 작성하면 모두 `public`
+- `private`
+  - 자식 클래스 내부 또는 클래스 인스턴스로 사용할 수 없음
+  - 해당 클래스 내부에서만 사용할 수 있음.
+  - `private` 대신 `#`을 사용할 수 있음
+- `protected`
+  - 자식 클래스 내부에서는 참조 가능하지만, 클래스 인스턴스로는 참조할 수 없음.
+
+```ts
+class Car {
+  private engine = "V8"; // 외부에서 접근 불가
+  protected wheels = 4;  // 자식 클래스에서 접근 가능
+  public color: string;  // 어디서나 접근 가능
+
+  constructor(color: string) {
+    this.color = color;
+  }
+
+  getEngine() {
+    return this.engine; // 클래스 내부에서 접근 가능
+  }
+}
+
+class SportsCar extends Car {
+  showDetails() {
+    console.log(`Wheels: ${this.wheels}, Color: ${this.color}`);
+  }
+}
+
+const car = new SportsCar("red");
+console.log(car.color); // "red"
+// console.log(car.wheels); // 오류: protected 멤버는 외부에서 접근 불가
+```
+
+### `readonly`
+- 읽기 전용 속성
+- 클래스 인스턴스로 접근 가능 하지만 수정은 불가능하게 하려면 `readonly`를 사용
+
+  - `readonly` 속성을 바꾸고 싶다면?
+```ts
+class Car {
+  readonly brand: string;
+  constructor(brand: string) {
+    this.brand = brand;
+  }
+}
+
+const car = new Car("BMW");
+console.log(car.brand); // "BMW"
+// car.brand = "Audi"; // 오류: readonly 속성은 변경할 수 없음
+``` 
+
+---
+
+### 정적 멤버(`static`)
+`this` 대신 클래스 명으로 접근한다.
+
+```ts
+  class Car {
+    static wheels = 4;
+
+    describe() {
+      console.log(`바퀴가 ${Car.wheels}개`)
+    }
+  }
+
+  console.log(Car.wheels); // 4
+  Car.describe(); // 바퀴가 4개
+```
+
+---
+
+### 추상 클래스 (Abstract Class)
+- 인스턴스를 생성할 수 없음.
+- 상속을 통해 구현해야 한다.
+
+```ts
+abstract class Car {
+  color: string;
+
+  constructor(color: string) {
+    this.color = color;
+  }
+
+  start() {
+    console.log("start");
+  }
+
+  abstract drive(): void; // 자식 클래스에서 구현해야 한다.
+}
+
+class Bmw extends Car {
+  drive() {
+    console.log("부르릉")
+  }
+}
+
+const myCar = new Bmw("white");
+myCar.start(); // "start"
+myCar.drive(); // "부르릉"
+```
+
+
+<br>
 
 # #7 제네릭(Generics)
 
+### 제네릭이란?
+- 선언 시에 데이터 타입을 고정하지 않고, 실제 사용 시 타입을 지정할 수 있는 기능
+- 코드 재사용 측면에서 유용한 기능
+
+### 특정 타입에 고정된 함수의 문제점
+```ts
+function getSize(arr: number[]): number {
+  return arr.length;
+}
+
+const arr1 = [1, 2, 3];
+getSize(arr1); // 3
+
+const arr2 = ["a", "b", "c"];
+getSize(arr2); // 에러
+
+const arr3 = [false, true, true];
+getSize(arr3); // 에러
+
+const arr4 = [{}, {}, {name: "Tim"}];
+getSize(arr4); // 에러
+```
+
+### 제네릭을 사용하여 해결
+```ts
+function getSize<T>(arr: T[]): number {
+  return arr.length;
+}
+
+const arr1 = [1, 2, 3];
+getSize<number>(arr1); // 3
+
+const arr2 = ["a", "b", "c"];
+getSize<string>(arr2); // 3
+
+const arr3 = [false, true, true];
+getSize<boolean>(arr3); // 3
+
+const arr4 = [{}, {}, {name: "Tim"}];
+getSize<object>(arr4); // 3
+```
+- `<T>` : 타입 파라미터
+  - 호출 시 구체적인 타입을 지정한다.
+  - 자동으로 타입을 추론할 수 있기 때문에 `<number>` 등 명시적으로 작성하지 않아도 된다. 
+
+---
+
+### 특정 타입에 고정된 인터페이스 
+
+```ts
+interface Mobile {
+  name: string;
+  price: number;
+  option: any; // 타입이 정해지지 않음.
+}
+```
+
+### 제네릭을 사용한 인터페이스
+```ts
+interface Mobile<T> {
+  name: string;
+  price: number;
+  option: T; 
+}
+
+const m1: Mobile<object> = {
+  name: "s21",
+  price: 1000,
+  option: {
+    color: "red",
+    coupon: false,
+  },
+}
+
+const m2: Mobile<string> = {
+  name: "s20",
+  price: 900,
+  option: "good",
+}
+```
+
+---
+
+### 제네릭의 제약 조건
+
+`extens`를 사용하여 제네릭 타입 파라미터(`<T>`)에 제약 조건을 추가
+
+```ts
+interface User {
+  name: string;
+  age: number;
+}
+
+interface Car {
+  name: string;
+  color: string;
+}
+
+interface Book {
+  price: number;
+}
+
+const user: User = { name: "alice", age: 10 };
+const car: Car = { name: "bmw", color: "red" };
+const book: Book = { price: 3000 };
+
+function showName<T extends { name: string }>(data: T): string {
+  return data.name;
+}
+
+showName(user);
+showName(car);
+showName(book); // "name" 속성이 없기 때문에 에러 발생
+```
+
+<br>
+
 # #8 유틸리티 타입(Utility Types)
+
+### `keyof`
+객체의 속성 이름을 **유니온 타입**으로 변환
+
+```ts
+interface User {
+  id: number;
+  name: string;
+  age: number;
+  gender: "m" | "f";
+}
+
+type UserKey = keyof User; 
+// type UserKey = id | name | age | gender
+
+const uk1: UserKey = "name";
+const uk2: UserKey = "address"; // 에러
+```
+
+---
+
+### `Partial`
+주어진 타입의 모든 속성을 선택적(optional)으로 만듦
+
+```ts
+interface User {
+  id: number;
+  name: string;
+  age: number;
+  gender: "m" | "f";
+}
+
+let admin: Partial<User> = {
+  id: 1,
+  name: "Bob",
+} // age, gender가 없어도 오류 없음
+```
+
+### `Required`
+주어진 타입의 모든 속성을 필수로 설정
+
+```ts
+interface User {
+  id: number;
+  name: string;
+  age?: number; // 선택적 속성
+}
+
+let admin: Required<User>= { 
+  id: 1,
+  name: "Bob",
+  age: 30, // age가 필수로 변경됨
+}
+```
+
+---
+
+### `Readonly`
+
+타입의 모든 속성을 읽기 전용(Readonly)으로 만듦
+
+```ts
+interface User {
+  id: number;
+  name: string;
+}
+
+let admin: Readonly<User>= {
+  id: 1,
+  name: "Bob",
+}
+
+admin.id = 2; // 읽기전용 속성은 수정 불가능
+```
+
+---
+
+### `Record`
+
+키 타입과 값 타입을 지정하여 객체를 생성
+
+**예제 1**
+```ts
+type Grade = "1" | "2" | "3" | "4";
+type Score = "A" | "B" | "C" | "D";
+
+const score: Record<Grade, Score> = {
+  1: "A",
+  2: "C",
+  3: "B",
+  4: "D",
+}
+```
+
+**예제 2**
+```ts
+interface User {
+  id: number;
+  name: string;
+  age: number;
+}
+
+function isValid(user: User) {
+  const result: Record<keyof User, boolean> = {
+    id: user.id > 0,
+    name: user.name !== "",
+    age: user.age > 0
+  }
+  return result;
+}
+```
+
+---
+
+### `Pick`
+
+특정 속성만 선택하여 새로운 타입 생성
+
+```ts
+interface User {
+  id: number;
+  name: string;
+  age: number;
+  gender: "M" | "W";
+}
+
+const admin: Pick<User, "id" | "name"> = {
+  id: 0,
+  name: "Bob"
+}
+```
+
+### `Omit`
+
+특정 속성 제외해서 새로운 타입 생성
+```ts
+interface User {
+  id: number;
+  name: string;
+  age: number;
+  gender: "M" | "W";
+}
+
+const admin: Omit<User, "age" | "gender"> = {
+  id: 0,
+  name: "Bob"
+}
+```
+
+---
+
+### `Exclude<T1, T2>`
+T1에서 T2을 제거하고 사용
+
+```ts
+type T1 = string | number | boolean;
+type T2 = Exclude<T1, boolean>; // 결과: string | number
+```
+
+---
+
+### `NonNullable<Type>`
+`null`과 `undefined`를 제외시킴
+
+```ts
+type T1 = string | null | undefined | void;
+type T2 = NonNullable<T1>; // 결과: string | void
+```
