@@ -140,9 +140,25 @@ function infLoop():never{
 
 ---
 
-### enum (열거형)
+### enum
+특정 값을 고정하는 자료형
 
-**기본 사용법**
+**기본 사용 방법**
+```ts
+enum Os {
+   Window,
+   Ios,
+   Android,
+} // enum 타입
+
+let myOs: Os; // enum 타입 변수 선언
+myOs = Os.Window; // enum 타입 변수에 enum 값 할당
+myOs = 'Linux'; // 에러: enum 타입 변수에는 반드시 설정된 enum 값만 올수 있음
+```
+
+**특징**
+- enum에 수동으로 값을 주지 않으면 자동으로 인덱스를 할당함.
+- 0부터 시작해서 멤버들의 번호를 매긴다.
 ```ts
 //enum
 
@@ -152,7 +168,6 @@ enum Os {
   Android // 2
 }
 ```
-enum에 수동으로 값을 주지 않으면 자동으로 인덱스를 할당함.
 
 **수동 값 할당**
 
@@ -209,7 +224,17 @@ let b:undefined = undefined;
 ### 인터페이스란 ?
 - 객체의 구조를 정의할 때 사용
 - 객체의 프로퍼티와 메서드의 타입을 명확히 규정
-- 선택적 프로퍼티(`?`), 읽기 전용 프로퍼티(`readonly`), 타입 확장을 지원
+- 객체의 껍데기 또는 설계도
+
+**선택적 프로퍼티**
+
+- 콜론(`:`)앞에 물음표(`?`)를 붙이면 됨.
+- 있어도 되고 없어도 되는 값
+
+**읽기전용 프로퍼티**
+
+- 객체를 처음 생성할 때만 값을 할당하고, 그 이후에는 변경할 수 없는 속성
+
 ---
 ### 인터페이스 기본 사용법
 **객체 구조 정의**
@@ -382,8 +407,9 @@ const benz: Benz = {
 ```
 **다중 확장**
 
+- 인터페이스는 여러 개를 `extends`할 수 있음
+- 클래스는 반드시 하나만 `extends`
 ```ts
-
 interface Car {
   color: string;
   wheels: number;
@@ -447,7 +473,7 @@ const result2 = hello("Sam"); // "Hello, Sam"
   - `name`이 `undefined`라면 `"world"`를 기본값으로 사용
 
 ---
-### 기본값 매개변수
+### 기본값(디폴트값...) 매개변수
 ```ts
 function hello(name= "world") {
   return `Hello, ${name}`;
@@ -494,6 +520,14 @@ add(1, 2, 3, 4, 5, 6, 7, 8, 9, 10); // 55
 ---
 ### `this` 타입 지정
 
+> #### `this`?
+> - 현재 실행 중인 함수가 속한 객체
+> - JavaScript에서 `this`는 누가 호출했느냐에 따라 값이 결정되었음.
+> - 전역에서는 실행 환경에 따라 브라우저는 `window`, Node.js는 `global`을 가리켰음.
+
+- Typescript에서는 함수의 `this` 타입을 명시할 수 있음.
+- `this`가 무엇을 가리켜야 하는지 명확하게 설정할 수 있음.
+
 ```ts
 interface User {
   name: string;
@@ -533,6 +567,8 @@ a(30, 'm');
 
 ### 함수 오버로드
 전달받은 매개변수의 개수나 타입에 따라 다른 동작을 하게 하는 것
+
+- 중괄호 (`{}`) 없는 함수를 실제 함수 위에다가 써주면 됨.
 ```ts
 interface User {
   name: string;
@@ -545,7 +581,7 @@ function join(name: string, age: number | string): User | string {
   if (typeof age === "number") {
     return {
       name, 
-      age.
+      age
     }
   } else {
     return "나이는 숫자로 입력해주세요."
